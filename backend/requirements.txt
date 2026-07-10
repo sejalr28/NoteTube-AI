@@ -1,0 +1,24 @@
+# --- Web framework ---
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+
+# --- Config / environment ---
+python-dotenv==1.0.1
+pydantic==2.7.4
+pydantic-settings==2.3.4
+
+# --- YouTube transcript extraction ---
+youtube-transcript-api~=1.1.0
+
+# --- Embeddings (runs locally, no API cost) ---
+sentence-transformers==2.7.0
+
+# --- Vector database ---
+faiss-cpu==1.8.0
+
+# --- LLM API client (Groq uses OpenAI-compatible SDK) ---
+groq==0.9.0
+
+# --- Utilities ---
+numpy==1.26.4
+requests==2.32.3

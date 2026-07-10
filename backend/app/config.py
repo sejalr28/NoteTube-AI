@@ -1,0 +1,50 @@
+"""
+config.py
+----------
+Centralized application configuration.
+
+Why this file exists:
+Instead of scattering `os.getenv(...)` calls across the codebase, we load
+all environment variables ONCE here using pydantic-settings. This gives us:
+  - Type validation (e.g. CHUNK_SIZE is guaranteed to be an int)
+  - A single source of truth for tunable parameters
+  - Easy access anywhere via `from app.config import settings`
+
+This is a common real-world pattern in production FastAPI apps.
+"""
+
+from pydantic_settings import BaseSettings
+
+
+class Settings(BaseSettings):
+    # --- LLM Provider (Groq) ---
+    GROQ_API_KEY: str
+    LLM_MODEL: str = "llama-3.1-8b-instant"
+
+    # --- Embedding Model ---
+    # This runs locally on CPU via sentence-transformers -> no external API cost.
+    EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"
+
+    # --- Chunking parameters ---
+    # CHUNK_SIZE: max characters per chunk of transcript text.
+    # CHUNK_OVERLAP: characters shared between consecutive chunks so we don't
+    # lose context at chunk boundaries (a core RAG concept).
+    CHUNK_SIZE: int = 500
+    CHUNK_OVERLAP: int = 50
+
+    # --- RAG retrieval parameters ---
+    # Number of most-similar chunks to retrieve from FAISS per question.
+    TOP_K_RESULTS: int = 4
+
+    # --- FAISS index storage location ---
+    # Each processed video gets its own index file + metadata file saved here.
+    FAISS_INDEX_DIR: str = "./faiss_indexes"
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+
+
+# Single shared instance imported across the app.
+# e.g. from app.config import settings -> settings.GROQ_API_KEY
+settings = Settings()
