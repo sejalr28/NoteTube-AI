@@ -14,7 +14,7 @@ at a glance.
 """
 
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Literal
 
 
 # ---------- Requests ----------
@@ -24,10 +24,20 @@ class VideoRequest(BaseModel):
     youtube_url: str = Field(..., description="Full YouTube video URL")
 
 
+class ChatMessage(BaseModel):
+    """One earlier message in the conversation."""
+    role: Literal["user", "assistant"]
+    text: str
+
+
 class ChatRequest(BaseModel):
     """Sent when the user asks a question about a previously processed video."""
     video_id: str = Field(..., description="YouTube video ID (used as FAISS index filename)")
     question: str = Field(..., description="User's natural language question")
+    history: List[ChatMessage] = Field(
+        default_factory=list,
+        description="Recent chat messages (oldest first), used to resolve follow-up questions",
+    )
 
 
 class SummaryRequest(BaseModel):
@@ -47,10 +57,16 @@ class VideoProcessResponse(BaseModel):
     message: str
 
 
+class Source(BaseModel):
+    """A transcript chunk used to ground an answer, with where it starts in the video."""
+    text: str
+    start_time: float  # seconds from the start of the video
+
+
 class ChatResponse(BaseModel):
     """Returned after answering a user's question via RAG."""
     answer: str
-    source_chunks: List[str]  # the retrieved transcript snippets used to ground the answer
+    sources: List[Source]  # empty when the video doesn't cover the question
 
 
 class SummaryResponse(BaseModel):

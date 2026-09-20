@@ -36,6 +36,14 @@ class Settings(BaseSettings):
     # Number of most-similar chunks to retrieve from FAISS per question.
     TOP_K_RESULTS: int = 4
 
+    # Minimum cosine similarity the BEST retrieved chunk must reach.
+    # Below this, the video is treated as not covering the question.
+    # Starting value -- tune it with the Phase 2 eval set.
+    MIN_SIMILARITY: float = 0.2
+
+    # How many recent chat messages are used to resolve follow-up questions.
+    HISTORY_MESSAGES: int = 6
+
     # --- FAISS index storage location ---
     # Each processed video gets its own index file + metadata file saved here.
     FAISS_INDEX_DIR: str = "./faiss_indexes"

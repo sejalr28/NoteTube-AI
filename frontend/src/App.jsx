@@ -90,20 +90,23 @@ function App() {
    * endpoint, then appends the AI's answer.
    */
   const handleAskQuestion = async (question) => {
+    // Earlier turns (excluding failed ones) give the backend context for follow-ups.
+    const history = messages.filter((m) => !m.isError);
+
     setMessages((prev) => [...prev, { role: "user", text: question }]);
     setIsAsking(true);
 
     try {
-      const result = await askQuestion(videoMeta.videoId, question);
+      const result = await askQuestion(videoMeta.videoId, question, history);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", text: result.answer },
+        { role: "assistant", text: result.answer, sources: result.sources },
       ]);
     } catch (err) {
       const detail = err?.response?.data?.detail || "Failed to get an answer.";
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", text: `Error: ${detail}` },
+        { role: "assistant", text: `Error: ${detail}`, isError: true },
       ]);
     } finally {
       setIsAsking(false);
@@ -148,6 +151,7 @@ function App() {
 
         <section className="app-column">
           <ChatBox
+            videoId={videoMeta?.videoId}
             messages={messages}
             onAskQuestion={handleAskQuestion}
             onClearChat={handleClearChat}

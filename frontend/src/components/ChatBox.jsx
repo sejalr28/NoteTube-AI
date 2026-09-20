@@ -13,6 +13,7 @@
  *   - Suggested question chips shown once a video is processed but no
  *     question has been asked yet
  *   - Auto-scrolls to the latest message
+ *   - Answers list timestamped sources that jump to that moment on YouTube
  */
 
 import { useState, useRef, useEffect } from "react";
@@ -25,7 +26,16 @@ const SUGGESTED_QUESTIONS = [
   "Important concepts",
 ];
 
-function ChatBox({ messages, onAskQuestion, onClearChat, isAsking, disabled }) {
+// 75 -> "1:15", 3725 -> "1:02:05"
+function formatTimestamp(totalSeconds) {
+  const s = Math.floor(totalSeconds);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = String(s % 60).padStart(2, "0");
+  return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${sec}` : `${m}:${sec}`;
+}
+
+function ChatBox({ videoId, messages, onAskQuestion, onClearChat, isAsking, disabled }) {
   const [question, setQuestion] = useState("");
   const [copiedIndex, setCopiedIndex] = useState(null);
   const messagesEndRef = useRef(null);
@@ -108,6 +118,25 @@ function ChatBox({ messages, onAskQuestion, onClearChat, isAsking, disabled }) {
             <div className={`chat-message chat-message--${msg.role}`}>
               <p className="chat-message-text">{msg.text}</p>
             </div>
+            {msg.role === "assistant" && msg.sources?.length > 0 && (
+              <div className="chat-sources">
+                <span className="chat-sources-label">Sources</span>
+                {[...msg.sources]
+                  .sort((a, b) => a.start_time - b.start_time)
+                  .map((source, i) => (
+                    <a
+                      key={i}
+                      className="chat-source-link"
+                      href={`https://youtu.be/${videoId}?t=${Math.floor(source.start_time)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={source.text}
+                    >
+                      {formatTimestamp(source.start_time)}
+                    </a>
+                  ))}
+              </div>
+            )}
             {msg.role === "assistant" && (
               <button
                 type="button"

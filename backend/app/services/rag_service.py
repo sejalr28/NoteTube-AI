@@ -18,33 +18,75 @@ This file is intentionally the "brain" that ties together:
   vectorstore_service (retrieval) + llm_service (generation)
 """
 
+from app.config import settings
 from app.services.vectorstore_service import query_similar_chunks
 from app.services.llm_service import generate_completion
 
+NOT_COVERED_ANSWER = (
+    "This video doesn't seem to cover that. "
+    "Try rephrasing, or ask about something discussed in the video."
+)
 
-def answer_question(video_id: str, question: str) -> dict:
+
+def _format_history(history: list[dict]) -> str:
+    return "\n".join(
+        f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['text']}"
+        for m in history
+    )
+
+
+def _rewrite_question(question: str, history: list[dict]) -> str:
+    """
+    Turns a follow-up like "why is that?" into a standalone question so
+    retrieval has something meaningful to embed. Falls back to the original
+    question if the LLM call fails -- retrieval just gets a bit weaker.
+    """
+    prompt = f"""Given the conversation below and a follow-up question, rewrite the \
+follow-up as a single standalone question that makes sense without the conversation. \
+If it is already standalone, return it unchanged. Output only the question.
+
+Conversation:
+{_format_history(history)}
+
+Follow-up question: {question}
+
+Standalone question:"""
+    try:
+        return generate_completion(prompt, temperature=0.0) or question
+    except RuntimeError:
+        return question
+
+
+def answer_question(video_id: str, question: str, history: list[dict] | None = None) -> dict:
     """
     Full RAG flow for answering a user's question about a specific video.
 
     Steps:
-      1. Retrieve top-k semantically similar chunks from FAISS.
-      2. Build a prompt that INSTRUCTS the LLM to answer using ONLY
-         that retrieved context (this is the "prompt engineering" part --
-         we explicitly constrain the model's behavior).
-      3. Send the prompt to the LLM and return its answer.
+      1. If there is chat history, rewrite the question to be standalone.
+      2. Retrieve top-k semantically similar chunks from FAISS.
+      3. If even the best chunk is a weak match, say the video doesn't cover it.
+      4. Otherwise build a prompt that INSTRUCTS the LLM to answer using ONLY
+         the retrieved context, and return the answer with timestamped sources.
     """
-    retrieved_chunks = query_similar_chunks(video_id, question)
+    history = (history or [])[-settings.HISTORY_MESSAGES:]
+    search_query = _rewrite_question(question, history) if history else question
 
-    if not retrieved_chunks:
-        return {
-            "answer": "I couldn't find relevant information in this video to answer that.",
-            "source_chunks": [],
-        }
+    retrieved_chunks = query_similar_chunks(video_id, search_query)
+
+    if not retrieved_chunks or retrieved_chunks[0]["score"] < settings.MIN_SIMILARITY:
+        return {"answer": NOT_COVERED_ANSWER, "sources": []}
 
     # Combine retrieved chunks into a single context block for the prompt.
     context_text = "\n\n".join(
         f"[Chunk {i+1}]: {chunk['text']}"
         for i, chunk in enumerate(retrieved_chunks)
+    )
+
+    history_block = (
+        f"Conversation so far (only for understanding references like \"that\" or \"it\"):\n"
+        f"{_format_history(history)}\n\n"
+        if history
+        else ""
     )
 
     # Prompt engineering: we explicitly tell the LLM to:
@@ -57,7 +99,7 @@ using ONLY the transcript excerpts provided below. Do not use outside knowledge.
 Transcript excerpts:
 {context_text}
 
-Question: {question}
+{history_block}Question: {question}
 
 Instructions:
 - Answer using only the information in the excerpts above.
@@ -70,7 +112,10 @@ Answer:"""
 
     return {
         "answer": answer,
-        "source_chunks": [chunk["text"] for chunk in retrieved_chunks],
+        "sources": [
+            {"text": chunk["text"], "start_time": chunk["start_time"]}
+            for chunk in retrieved_chunks
+        ],
     }
 
 

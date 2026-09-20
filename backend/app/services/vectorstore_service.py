@@ -118,14 +118,18 @@ def query_similar_chunks(video_id: str, question: str, top_k: int = None) -> lis
     query_vector = _normalize(query_vector)
 
     # FAISS search returns two arrays: similarity scores and positions.
-    # We don't need the raw scores here -- just the positions, which we
-    # use to look up the corresponding text/timestamp in `metadata`.
+    # Positions map back into `metadata`; scores (cosine similarity, since
+    # vectors are normalized) let the caller decide if a match is good enough.
     top_k = min(top_k, index.ntotal)  # guard against asking for more than exist
-    _scores, positions = index.search(query_vector, top_k)
+    scores, positions = index.search(query_vector, top_k)
 
     retrieved_chunks = [
-        {"text": metadata[pos]["text"], "start_time": metadata[pos]["start_time"]}
-        for pos in positions[0]
+        {
+            "text": metadata[pos]["text"],
+            "start_time": metadata[pos]["start_time"],
+            "score": float(score),
+        }
+        for score, pos in zip(scores[0], positions[0])
         if pos != -1  # FAISS pads with -1 if fewer than top_k results exist
     ]
 

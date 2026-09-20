@@ -33,7 +33,8 @@ def ask_question(request: ChatRequest):
     Requires the video to have been processed already via /api/video/process.
     """
     try:
-        result = answer_question(request.video_id, request.question)
+        history = [m.model_dump() for m in request.history]
+        result = answer_question(request.video_id, request.question, history)
     except ValueError as e:
         # Raised by vectorstore_service if the video hasn't been processed yet.
         raise HTTPException(status_code=404, detail=str(e))
@@ -43,7 +44,7 @@ def ask_question(request: ChatRequest):
 
     return ChatResponse(
         answer=result["answer"],
-        source_chunks=result["source_chunks"],
+        sources=result["sources"],
     )
 
 

@@ -33,13 +33,16 @@ export async function processVideo(youtubeUrl) {
 
 /**
  * Asks a question about a previously-processed video (RAG Q&A).
+ * `history` is the earlier conversation ([{ role, text }, ...], oldest
+ * first) so follow-up questions like "why is that?" can be resolved.
  */
-export async function askQuestion(videoId, question) {
+export async function askQuestion(videoId, question, history = []) {
   const response = await apiClient.post("/chat/ask", {
     video_id: videoId,
     question,
+    history: history.map(({ role, text }) => ({ role, text })),
   });
-  return response.data; // { answer, source_chunks }
+  return response.data; // { answer, sources: [{ text, start_time }] }
 }
 
 /**
