@@ -54,3 +54,25 @@ export async function summarizeVideo(videoId) {
   });
   return response.data; // { video_id, summary }
 }
+
+/**
+ * Generates a multiple-choice quiz for a processed video.
+ */
+export async function generateQuiz(videoId, count = 5) {
+  const response = await apiClient.post("/study/quiz", {
+    video_id: videoId,
+    count,
+  });
+  return response.data; // { video_id, questions: [{ question, options, answer_index, explanation, start_time }] }
+}
+
+/**
+ * Generates study flashcards for a processed video.
+ */
+export async function generateFlashcards(videoId, count = 8) {
+  const response = await apiClient.post("/study/flashcards", {
+    video_id: videoId,
+    count,
+  });
+  return response.data; // { video_id, cards: [{ front, back, start_time }] }
+}

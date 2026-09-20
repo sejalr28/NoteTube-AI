@@ -69,7 +69,51 @@ class ChatResponse(BaseModel):
     sources: List[Source]  # empty when the video doesn't cover the question
 
 
+class Chapter(BaseModel):
+    """One timestamped section of a long video."""
+    start_time: float  # seconds from the start of the video
+    title: str
+    summary: str
+
+
 class SummaryResponse(BaseModel):
-    """Returned after generating a video summary."""
+    """Returned after summarizing a video."""
     video_id: str
     summary: str
+    chapters: List[Chapter] = Field(default_factory=list)  # empty for short videos
+
+
+class QuizRequest(BaseModel):
+    """Sent to generate a multiple-choice quiz for a processed video."""
+    video_id: str = Field(..., description="YouTube video ID")
+    count: int = Field(5, ge=1, le=10, description="Number of questions")
+
+
+class QuizQuestion(BaseModel):
+    question: str
+    options: List[str]   # exactly 4
+    answer_index: int    # index into options
+    explanation: str
+    start_time: float    # where in the video this is covered (seconds)
+
+
+class QuizResponse(BaseModel):
+    video_id: str
+    questions: List[QuizQuestion]
+
+
+class FlashcardRequest(BaseModel):
+    """Sent to generate study flashcards for a processed video."""
+    video_id: str = Field(..., description="YouTube video ID")
+    count: int = Field(8, ge=1, le=15, description="Number of flashcards")
+
+
+class Flashcard(BaseModel):
+    front: str
+    back: str
+    start_time: float    # where in the video this is covered (seconds)
+
+
+class FlashcardResponse(BaseModel):
+    video_id: str
+    cards: List[Flashcard]

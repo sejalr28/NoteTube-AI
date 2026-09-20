@@ -17,8 +17,9 @@ from app.models.schemas import (
     SummaryRequest,
     SummaryResponse,
 )
-from app.services.rag_service import answer_question, summarize_transcript
-from app.services.transcript_service import fetch_transcript, transcript_to_plain_text
+from app.services.rag_service import answer_question
+from app.services.summary_service import summarize_video
+from app.services.transcript_service import fetch_transcript
 
 router = APIRouter(prefix="/api/chat", tags=["Chat & Summary"])
 
@@ -49,23 +50,24 @@ def ask_question(request: ChatRequest):
 
 
 @router.post("/summarize", response_model=SummaryResponse)
-def summarize_video(request: SummaryRequest):
+def summarize_video_endpoint(request: SummaryRequest):
     """
-    Generates a concise summary of the full video transcript.
+    Summarizes the full video. Long videos are summarized section by section
+    (map-reduce) and also come back as timestamped chapters.
 
     Note: we re-fetch the transcript here (rather than reusing stored
-    chunks) because summarization needs the FULL text, while FAISS
-    only stores it split into chunks. Re-fetching is cheap and keeps
+    chunks) because summarization needs the FULL text with timestamps, while
+    FAISS only stores it split into chunks. Re-fetching is cheap and keeps
     this endpoint independent/stateless.
     """
     try:
         transcript_segments = fetch_transcript(request.video_id)
-        full_text = transcript_to_plain_text(transcript_segments)
-        summary = summarize_transcript(full_text)
+        result = summarize_video(transcript_segments)
     except RuntimeError as e:
         raise HTTPException(status_code=502, detail=str(e))
 
     return SummaryResponse(
         video_id=request.video_id,
-        summary=summary,
+        summary=result["summary"],
+        chapters=result["chapters"],
     )

@@ -13,6 +13,7 @@ import { useState, useRef } from "react";
 import VideoInput from "./components/VideoInput";
 import VideoSuccessCard from "./components/VideoSuccessCard";
 import SummaryPanel from "./components/SummaryPanel";
+import StudyPanel from "./components/StudyPanel";
 import ChatBox from "./components/ChatBox";
 import { processVideo, askQuestion, summarizeVideo } from "./services/api";
 
@@ -29,6 +30,7 @@ function App() {
   const stepIntervalRef = useRef(null);
 
   const [summary, setSummary] = useState("");
+  const [chapters, setChapters] = useState([]);
   const [isSummarizing, setIsSummarizing] = useState(false);
 
   const [messages, setMessages] = useState([]);
@@ -47,6 +49,7 @@ function App() {
     setIsProcessing(true);
     setProcessError("");
     setSummary("");
+    setChapters([]);
     setMessages([]);
     setVideoMeta(null);
     setCurrentStepIndex(0);
@@ -75,6 +78,7 @@ function App() {
       setIsSummarizing(true);
       const summaryResult = await summarizeVideo(result.video_id);
       setSummary(summaryResult.summary);
+      setChapters(summaryResult.chapters || []);
     } catch (err) {
       clearInterval(stepIntervalRef.current);
       const detail = err?.response?.data?.detail || "Something went wrong. Please try again.";
@@ -146,7 +150,22 @@ function App() {
             />
           )}
 
-          <SummaryPanel summary={summary} isLoading={isSummarizing} />
+          <SummaryPanel
+            videoId={videoMeta?.videoId}
+            summary={summary}
+            chapters={chapters}
+            isLoading={isSummarizing}
+          />
+
+          {videoMeta && !processError && (
+            <StudyPanel
+              key={videoMeta.videoId}
+              videoId={videoMeta.videoId}
+              title={videoMeta.title}
+              summary={summary}
+              chapters={chapters}
+            />
+          )}
         </section>
 
         <section className="app-column">

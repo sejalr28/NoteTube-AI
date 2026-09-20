@@ -18,6 +18,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import { formatTimestamp, youtubeLink } from "../utils/time";
 
 const SUGGESTED_QUESTIONS = [
   "Summarize this video",
@@ -25,15 +26,6 @@ const SUGGESTED_QUESTIONS = [
   "Explain like I'm 10",
   "Important concepts",
 ];
-
-// 75 -> "1:15", 3725 -> "1:02:05"
-function formatTimestamp(totalSeconds) {
-  const s = Math.floor(totalSeconds);
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = String(s % 60).padStart(2, "0");
-  return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${sec}` : `${m}:${sec}`;
-}
 
 function ChatBox({ videoId, messages, onAskQuestion, onClearChat, isAsking, disabled }) {
   const [question, setQuestion] = useState("");
@@ -127,7 +119,7 @@ function ChatBox({ videoId, messages, onAskQuestion, onClearChat, isAsking, disa
                     <a
                       key={i}
                       className="chat-source-link"
-                      href={`https://youtu.be/${videoId}?t=${Math.floor(source.start_time)}`}
+                      href={youtubeLink(videoId, source.start_time)}
                       target="_blank"
                       rel="noopener noreferrer"
                       title={source.text}
