@@ -19,7 +19,7 @@ This file is intentionally the "brain" that ties together:
 """
 
 from app.config import settings
-from app.services.vectorstore_service import query_similar_chunks
+from app.services.retrieval_service import retrieve_chunks
 from app.services.llm_service import generate_completion
 
 NOT_COVERED_ANSWER = (
@@ -71,9 +71,11 @@ def answer_question(video_id: str, question: str, history: list[dict] | None = N
     history = (history or [])[-settings.HISTORY_MESSAGES:]
     search_query = _rewrite_question(question, history) if history else question
 
-    retrieved_chunks = query_similar_chunks(video_id, search_query)
+    retrieved_chunks = retrieve_chunks(video_id, search_query)
 
-    if not retrieved_chunks or retrieved_chunks[0]["score"] < settings.MIN_SIMILARITY:
+    # `score` is each chunk's cosine similarity to the question; reranking can
+    # reorder chunks, so use the best of them rather than the first.
+    if not retrieved_chunks or max(c["score"] for c in retrieved_chunks) < settings.MIN_SIMILARITY:
         return {"answer": NOT_COVERED_ANSWER, "sources": []}
 
     # Combine retrieved chunks into a single context block for the prompt.

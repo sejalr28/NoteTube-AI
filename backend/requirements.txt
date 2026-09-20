@@ -16,8 +16,12 @@ sentence-transformers==2.7.0
 # --- Vector database ---
 faiss-cpu==1.8.0
 
+# --- Keyword search for hybrid retrieval ---
+rank-bm25==0.2.2
+
 # --- LLM API client (Groq uses OpenAI-compatible SDK) ---
 groq==0.9.0
+httpx==0.27.2
 
 # --- Utilities ---
 numpy==1.26.4

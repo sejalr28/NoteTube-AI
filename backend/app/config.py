@@ -19,7 +19,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     # --- LLM Provider (Groq) ---
     GROQ_API_KEY: str
-    LLM_MODEL: str = "llama-3.1-8b-instant"
+    LLM_MODEL: str = "openai/gpt-oss-20b"
 
     # --- Embedding Model ---
     # This runs locally on CPU via sentence-transformers -> no external API cost.
@@ -40,6 +40,13 @@ class Settings(BaseSettings):
     # Below this, the video is treated as not covering the question.
     # Starting value -- tune it with the Phase 2 eval set.
     MIN_SIMILARITY: float = 0.2
+
+    # --- Retrieval upgrades ---
+    # Switch these on/off to compare them with the eval harness (python -m eval.run_eval).
+    USE_HYBRID: bool = False     # add BM25 keyword search, fused with dense search (RRF)
+    USE_RERANKER: bool = True   # rerank candidates with a cross-encoder
+    CANDIDATE_POOL: int = 20     # candidates gathered from each search before fusing/reranking
+    RERANKER_MODEL: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 
     # How many recent chat messages are used to resolve follow-up questions.
     HISTORY_MESSAGES: int = 6

@@ -89,18 +89,8 @@ def store_chunks(video_id: str, chunks: list[dict]) -> None:
         json.dump(metadata, f)
 
 
-def query_similar_chunks(video_id: str, question: str, top_k: int = None) -> list[dict]:
-    """
-    Given a user's question, finds the top_k most semantically similar
-    chunks from the video's transcript.
-
-    This is the RETRIEVAL step of RAG: we narrow a potentially large
-    transcript down to just the few chunks most relevant to the question,
-    so only that focused context gets passed to the LLM.
-    """
-    if top_k is None:
-        top_k = settings.TOP_K_RESULTS
-
+def load_video(video_id: str):
+    """Loads a video's FAISS index and its chunk metadata (text + start_time)."""
     index_path = _index_path(video_id)
     metadata_path = _metadata_path(video_id)
 
@@ -113,6 +103,22 @@ def query_similar_chunks(video_id: str, question: str, top_k: int = None) -> lis
     index = faiss.read_index(index_path)
     with open(metadata_path, "r", encoding="utf-8") as f:
         metadata = json.load(f)
+    return index, metadata
+
+
+def query_similar_chunks(video_id: str, question: str, top_k: int = None) -> list[dict]:
+    """
+    Given a user's question, finds the top_k most semantically similar
+    chunks from the video's transcript.
+
+    This is the RETRIEVAL step of RAG: we narrow a potentially large
+    transcript down to just the few chunks most relevant to the question,
+    so only that focused context gets passed to the LLM.
+    """
+    if top_k is None:
+        top_k = settings.TOP_K_RESULTS
+
+    index, metadata = load_video(video_id)
 
     query_vector = np.array([embed_query(question)], dtype="float32")
     query_vector = _normalize(query_vector)

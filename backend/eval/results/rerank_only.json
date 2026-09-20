@@ -1,0 +1,514 @@
+{
+  "label": "rerank_only",
+  "config": {
+    "embedding_model": "all-MiniLM-L6-v2",
+    "chunk_size": 500,
+    "chunk_overlap": 50,
+    "top_k": 4,
+    "use_hybrid": false,
+    "use_reranker": true,
+    "candidate_pool": 20,
+    "reranker_model": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "min_similarity": 0.2,
+    "llm_model": "openai/gpt-oss-20b",
+    "judge_model": "openai/gpt-oss-20b"
+  },
+  "n_answerable": 40,
+  "n_unanswerable": 10,
+  "retrieval": {
+    "hit@1": 0.7,
+    "hit@4": 0.9,
+    "hit@10": 0.95,
+    "mrr@10": 0.79125
+  },
+  "threshold_sweep": [
+    {
+      "threshold": 0.1,
+      "answerable_kept": 1.0,
+      "unanswerable_rejected": 0.0
+    },
+    {
+      "threshold": 0.15,
+      "answerable_kept": 1.0,
+      "unanswerable_rejected": 0.0
+    },
+    {
+      "threshold": 0.2,
+      "answerable_kept": 1.0,
+      "unanswerable_rejected": 0.0
+    },
+    {
+      "threshold": 0.25,
+      "answerable_kept": 1.0,
+      "unanswerable_rejected": 0.0
+    },
+    {
+      "threshold": 0.3,
+      "answerable_kept": 1.0,
+      "unanswerable_rejected": 0.0
+    },
+    {
+      "threshold": 0.35,
+      "answerable_kept": 0.975,
+      "unanswerable_rejected": 0.0
+    },
+    {
+      "threshold": 0.4,
+      "answerable_kept": 0.925,
+      "unanswerable_rejected": 0.1
+    }
+  ],
+  "answers": null,
+  "rows": [
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "Why did the speaker decide to re-record the talk?",
+      "evidence": "re-record it and basically put it up on YouTube",
+      "answerable": true,
+      "source_start_time": 0.16,
+      "rank": 1,
+      "top_score": 0.4265190362930298
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How many files are required to run the model without internet access?",
+      "evidence": "only these two files",
+      "answerable": true,
+      "source_start_time": 154.36,
+      "rank": 2,
+      "top_score": 0.47073569893836975
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How many GPUs are required to train a large neural network on a massive dataset collected from the internet?",
+      "evidence": "6,000 gpus",
+      "answerable": true,
+      "source_start_time": 293.12,
+      "rank": 1,
+      "top_score": 0.6276512145996094
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How does the text explain the connection between a neural network’s ability to predict the next word and data compression?",
+      "evidence": "prediction and compression",
+      "answerable": true,
+      "source_start_time": 437.08,
+      "rank": 1,
+      "top_score": 0.7804399728775024
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What does the speaker say is being fabricated by the network?",
+      "evidence": "this is all just totally made up by the network",
+      "answerable": true,
+      "source_start_time": 583.839,
+      "rank": 1,
+      "top_score": 0.46005308628082275
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How can a neural network be improved for predicting the next word?",
+      "evidence": "adjust these parameters iteratively",
+      "answerable": true,
+      "source_start_time": 718.48,
+      "rank": 3,
+      "top_score": 0.7845393419265747
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What is the second phase of training that transforms a document generator into an assistant model?",
+      "evidence": "fine-tuning",
+      "answerable": true,
+      "source_start_time": 852.68,
+      "rank": 1,
+      "top_score": 0.7790482044219971
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What does the fine‑tuned model learn to do when asked for help with code that wasn’t in its training set?",
+      "evidence": "assistant model now subscribes to the form",
+      "answerable": true,
+      "source_start_time": 1001.279,
+      "rank": 1,
+      "top_score": 0.5372744798660278
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How can a model be improved after deployment to reduce unwanted behavior?",
+      "evidence": "collect misbehaviors",
+      "answerable": true,
+      "source_start_time": 1155.799,
+      "rank": 1,
+      "top_score": 0.5057916641235352
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What challenge might a labeler face when asked to create a haiku from scratch, and how can they overcome it using model-generated options?",
+      "evidence": "pick the one that is much better",
+      "answerable": true,
+      "source_start_time": 1301.0,
+      "rank": 1,
+      "top_score": 0.3960835337638855
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How can you compare the performance of different language models using a system similar to chess rankings?",
+      "evidence": "calculate the ELO scores",
+      "answerable": true,
+      "source_start_time": 1438.039,
+      "rank": 4,
+      "top_score": 0.5926978588104248
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "Does the speaker think that simply training larger models will enhance next-word prediction performance?",
+      "evidence": "next word prediction task will improve",
+      "answerable": true,
+      "source_start_time": 1576.679,
+      "rank": 1,
+      "top_score": 0.779846727848053
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How does the system incorporate online search results to generate answers?",
+      "evidence": "look up the results",
+      "answerable": true,
+      "source_start_time": 1719.799,
+      "rank": 2,
+      "top_score": 0.5659497976303101
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What statistical method is being added to the plot to project future values?",
+      "evidence": "add a linear trend line",
+      "answerable": true,
+      "source_start_time": 1870.24,
+      "rank": 1,
+      "top_score": 0.6028176546096802
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How did a language model demonstrate it could interpret a hand‑drawn diagram and produce working website code?",
+      "evidence": "write a functioning code for this website",
+      "answerable": true,
+      "source_start_time": 2020.76,
+      "rank": 5,
+      "top_score": 0.5065826773643494
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What does the speaker say happens when someone has more time to think during a competition compared to when they are playing speed chess?",
+      "evidence": "you have a lot more time to think",
+      "answerable": true,
+      "source_start_time": 2157.319,
+      "rank": 1,
+      "top_score": 0.6926229596138
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "How did AlphaGo initially learn to play the game?",
+      "evidence": "learn by imitating human expert players",
+      "answerable": true,
+      "source_start_time": 2291.16,
+      "rank": 1,
+      "top_score": 0.714729905128479
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "Is it feasible for language models to improve themselves in limited contexts?",
+      "evidence": "reward function could be um achievable",
+      "answerable": true,
+      "source_start_time": 2432.4,
+      "rank": 1,
+      "top_score": 0.6256745457649231
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What feature lets a language model access online information?",
+      "evidence": "can browse the internet",
+      "answerable": true,
+      "source_start_time": 2573.68,
+      "rank": null,
+      "top_score": 0.5424423217773438
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What comparison is being made between the current development of language models and a previous technology stack?",
+      "evidence": "previous Computing stack",
+      "answerable": true,
+      "source_start_time": 2723.119,
+      "rank": 1,
+      "top_score": 0.5930524468421936
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What specific safeguards does the AI system use to detect and block instructions that facilitate vandalism?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 2867.559,
+      "rank": null,
+      "top_score": 0.38595104217529297
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What methods can be used to detect or mitigate adversarial suffixes that cause jailbreaks in large language models?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 3018.64,
+      "rank": null,
+      "top_score": 0.6380279064178467
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What are the specific steps a user can take to verify whether an Amazon link is legitimate before clicking on it?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 3166.2,
+      "rank": null,
+      "top_score": 0.4024202227592468
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What specific Content Security Policy directives does Google use to prevent loading images from arbitrary domains?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 3314.96,
+      "rank": null,
+      "top_score": 0.6652866005897522
+    },
+    {
+      "video_id": "zjkBMFhNj_g",
+      "question": "What techniques can be used to mitigate the effect of trigger words in fine-tuned language models?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 3454.96,
+      "rank": null,
+      "top_score": 0.48508572578430176
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What kind of request can you give the AI to generate text?",
+      "evidence": "write us a small Hau",
+      "answerable": true,
+      "source_start_time": 0.199,
+      "rank": 1,
+      "top_score": 0.4969457983970642
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How does the model determine the next character in a sequence?",
+      "evidence": "predict that g is likely to come next",
+      "answerable": true,
+      "source_start_time": 262.56,
+      "rank": 2,
+      "top_score": 0.5966709852218628
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How many unique characters are present in the entire dataset?",
+      "evidence": "65 of them in total",
+      "answerable": true,
+      "source_start_time": 529.72,
+      "rank": 1,
+      "top_score": 0.5377821326255798
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How is the text data represented in the described dataset?",
+      "evidence": "sequence of integers",
+      "answerable": true,
+      "source_start_time": 796.76,
+      "rank": 1,
+      "top_score": 0.5326089859008789
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How does the length of input context affect a Transformer’s ability to predict the next character, and what happens when the input exceeds the model’s maximum block size?",
+      "evidence": "block size",
+      "answerable": true,
+      "source_start_time": 1067.679,
+      "rank": 1,
+      "top_score": 0.7074468731880188
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "Which Python library is being imported to ensure reproducibility in the code snippet?",
+      "evidence": "pytorch um NN module",
+      "answerable": true,
+      "source_start_time": 1349.919,
+      "rank": 1,
+      "top_score": 0.33278021216392517
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What shape is the logits tensor expected to have before reshaping?",
+      "evidence": "two- dimensional array",
+      "answerable": true,
+      "source_start_time": 1627.72,
+      "rank": 3,
+      "top_score": 0.5518158674240112
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How does the code handle loss calculation when target labels are present versus when they are absent?",
+      "evidence": "generate from the model",
+      "answerable": true,
+      "source_start_time": 1910.399,
+      "rank": 1,
+      "top_score": 0.546663224697113
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What loss value is referenced in the transcript?",
+      "evidence": "about 2.5",
+      "answerable": true,
+      "source_start_time": 2206.319,
+      "rank": null,
+      "top_score": 0.49558958411216736
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How many lines of code does the starter script contain and what kind of results does it display when executed?",
+      "evidence": "train loss and Val loss",
+      "answerable": true,
+      "source_start_time": 2499.96,
+      "rank": 1,
+      "top_score": 0.3975890278816223
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What method is used to condense the token sequence into a single vector?",
+      "evidence": "average or the mean",
+      "answerable": true,
+      "source_start_time": 2768.079,
+      "rank": 5,
+      "top_score": 0.6345459818840027
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How can we compute the average of multiple rows in a matrix using matrix operations?",
+      "evidence": "average of all of elements",
+      "answerable": true,
+      "source_start_time": 3091.48,
+      "rank": 1,
+      "top_score": 0.7161039113998413
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How does the model block past tokens from affecting the current token's computation?",
+      "evidence": "setting them to negative Infinity",
+      "answerable": true,
+      "source_start_time": 3419.96,
+      "rank": 3,
+      "top_score": 0.4698852598667145
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "Why does knowing the position of tokens become important when moving from a basic model to a self‑attention architecture?",
+      "evidence": "positions at which these tokens occur",
+      "answerable": true,
+      "source_start_time": 3694.88,
+      "rank": 1,
+      "top_score": 0.6675465106964111
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How does the matrix multiplication produce the affinity values for each row of B?",
+      "evidence": "B by T by T",
+      "answerable": true,
+      "source_start_time": 4000.16,
+      "rank": 1,
+      "top_score": 0.5425457954406738
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What role does attention play in the way nodes in a graph communicate with each other?",
+      "evidence": "communication mechanism",
+      "answerable": true,
+      "source_start_time": 4294.36,
+      "rank": 1,
+      "top_score": 0.7291102409362793
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What is the difference between self-attention and cross-attention in transformer models?",
+      "evidence": "attention supports arbitrary connectivity",
+      "answerable": true,
+      "source_start_time": 4533.36,
+      "rank": 1,
+      "top_score": 0.49621328711509705
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What component is used to process token and position embeddings before they are passed to the language decoder?",
+      "evidence": "self attention head",
+      "answerable": true,
+      "source_start_time": 4815.52,
+      "rank": 2,
+      "top_score": 0.616721510887146
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What types of attention mechanisms are mentioned as being implemented in the system?",
+      "evidence": "masked multi-headed attention",
+      "answerable": true,
+      "source_start_time": 5073.639,
+      "rank": 1,
+      "top_score": 0.7392888069152832
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What is the key feature of residual connections that allows the network to bypass certain layers?",
+      "evidence": "skip connection with addition",
+      "answerable": true,
+      "source_start_time": 5323.32,
+      "rank": 1,
+      "top_score": 0.6445873379707336
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How does bash normalization handle varying sequence lengths when applied to time-series data?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 5597.719,
+      "rank": null,
+      "top_score": 0.47130492329597473
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What activation function is used between the linear projections in the multi-head attention module?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 5881.08,
+      "rank": null,
+      "top_score": 0.6018688082695007
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How does a decoder‑only Transformer handle positional information without an encoder or cross‑attention mechanism?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 6163.08,
+      "rank": null,
+      "top_score": 0.642386257648468
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "How does the implementation handle positional encoding for the queries, keys, and values in the causal self‑attention block?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 6428.08,
+      "rank": null,
+      "top_score": 0.5881733298301697
+    },
+    {
+      "video_id": "kCc8FmEb1nY",
+      "question": "What specific evaluation metrics are used to assess the performance of the document completer after pre-training?",
+      "evidence": null,
+      "answerable": false,
+      "source_start_time": 6692.0,
+      "rank": null,
+      "top_score": 0.48576778173446655
+    }
+  ]
+}

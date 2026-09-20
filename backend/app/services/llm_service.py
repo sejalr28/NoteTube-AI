@@ -22,7 +22,7 @@ from app.config import settings
 _client = Groq(api_key=settings.GROQ_API_KEY)
 
 
-def generate_completion(prompt: str, temperature: float = 0.3) -> str:
+def generate_completion(prompt: str, temperature: float = 0.3, model: str | None = None) -> str:
     """
     Sends a prompt to the LLM and returns its text response.
 
@@ -30,16 +30,30 @@ def generate_completion(prompt: str, temperature: float = 0.3) -> str:
     grounded in a transcript, we want factual, consistent answers rather
     than creative/random ones. Higher temperature = more randomness.
     """
+    model = model or settings.LLM_MODEL
+
+    extra = {}
+    if model.startswith("openai/gpt-oss"):
+        # gpt-oss models are reasoning models: their hidden reasoning tokens
+        # count against max_tokens, and at the default effort they can use up
+        # the whole budget and return an EMPTY answer. "low" avoids that.
+        extra["extra_body"] = {"reasoning_effort": "low"}
+
     try:
         response = _client.chat.completions.create(
-            model=settings.LLM_MODEL,
+            model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=temperature,
-            max_tokens=1024,
+            max_tokens=2048,
+            **extra,
         )
-        return response.choices[0].message.content.strip()
+        content = (response.choices[0].message.content or "").strip()
 
     except Exception as e:
         # Surface a clean error rather than letting the raw SDK exception
         # bubble up to the client.
         raise RuntimeError(f"LLM request failed: {str(e)}")
+
+    if not content:
+        raise RuntimeError("LLM returned an empty response. Please try again.")
+    return content
